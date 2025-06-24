@@ -1,50 +1,122 @@
-# Welcome to your Expo app 👋
+# Event App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A full-stack event management app built with React Native (Expo) for the frontend and Node.js, Apollo Server, and Prisma/PostgreSQL for the backend.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Installation & Setup
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+### 1. **Clone the repository**
+```sh
+git clone https://github.com/vrush119/event_app.git
+cd event_app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+### 2. **Backend Setup**
 
-To learn more about developing your project with Expo, look at the following resources:
+#### a. Install dependencies
+```sh
+cd backend
+npm install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+#### b. Configure environment variables
 
-## Join the community
+Create a `.env` file in the `backend` folder with the following (edit as needed):
+```
+DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/eventdb"
+JWT_SECRET="supersecret"
+```
 
-Join our community of developers creating universal apps.
+#### c. Run Prisma migrations & generate client
+```sh
+npx prisma migrate dev --name init
+npx prisma generate
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+#### d. Seed the database
+```sh
+npx ts-node seed.ts
+```
+
+#### e. Start the backend server
+```sh
+npm run dev
+```
+The backend will run by default on [http://localhost:4000/graphql](http://localhost:4000/graphql).
+
+---
+
+### 3. **Frontend Setup**
+
+#### a. Install dependencies
+```sh
+cd ../
+npm install
+```
+
+#### b. Update Apollo Client URI
+
+In your frontend code (usually in `app/_layout.tsx` or similar), set the Apollo Client URI to your backend server.  
+If running on a real device, use your computer's local IP address:
+```js
+const client = new ApolloClient({
+  uri: 'http://YOUR_LOCAL_IP:4000/graphql',
+  cache: new InMemoryCache(),
+});
+```
+
+#### c. Start the Expo app
+```sh
+npx expo start
+```
+Scan the QR code with Expo Go app on your mobile device.
+
+---
+
+## 🧑‍💻 How to Run Locally
+
+1. **Start PostgreSQL** and ensure your database is running.
+2. **Start the backend** (`npm run dev` in `backend`).
+3. **Start the frontend** (`npx expo start` in the project root).
+4. **Open the app** in Expo Go on your device or in an emulator.
+
+---
+
+## 🔑 Example Credentials
+
+Use these credentials to log in (from the seed data):
+
+| Email                   | Password |
+|-------------------------|----------|
+| vrushali@example.com    | pass123  |
+| ankit@example.com       | pass123  |
+| sana@example.com        | pass123  |
+| dev@example.com         | pass123  |
+
+---
+
+## 📝 Notes
+
+- If you change the backend port or database credentials, update them in the `.env` file and frontend Apollo Client URI.
+- If you get network errors on a real device, make sure your backend is accessible via your computer's local IP and your firewall allows incoming connections.
+
+---
+
+## 📂 Project Structure
+
+```
+event_app/
+  app/           # React Native (Expo) frontend
+  backend/       # Node.js, Apollo Server, Prisma backend
+    prisma/      # Prisma schema and migrations
+    seed.ts      # Database seeding script
+```
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome!
