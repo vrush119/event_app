@@ -1,29 +1,63 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { View, Image, Text } from 'react-native';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'; // Add this
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql', // your backend URL
+  cache: new InMemoryCache(),
+});
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ApolloProvider client={client}> {/* Wrap your layout here */}
+  
+    <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
+      {/* Header */}
+      <View
+        style={{
+          width: '100%',
+          backgroundColor: '#25292e',
+          paddingVertical: 12,
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row',
+        }}
+      >
+        <Image
+          source={require('../assets/images/event-header.png')}
+          style={{ width: 48, height: 48, resizeMode: 'contain', marginRight: 12 }}
+        />
+        <Text
+          style={{
+            color: '#ffd33d',
+            fontSize: 22,
+            fontWeight: 'bold',
+            letterSpacing: 1,
+          }}
+        >
+          Event App
+        </Text>
+      </View>
+
+      {/* Main content */}
+      <View style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </View>
+
+      {/* Footer */}
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: '#25292e',
+          padding: 12,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Text style={{ color: '#ffd33d', fontWeight: 'bold' }}>© 2025 Event App</Text>
+      </View>
+    </View>
+  
+  </ApolloProvider>
   );
 }
